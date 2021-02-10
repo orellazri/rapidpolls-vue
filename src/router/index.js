@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../pages/Home.vue'
+import ViewPoll from '../pages/ViewPoll.vue'
 
 Vue.use(VueRouter)
 
@@ -13,6 +14,14 @@ const routes = [
       title: 'Rapid Polls'
     },
   },
+  {
+    path: '/:pollId',
+    name: 'ViewPoll',
+    component: ViewPoll,
+    meta: {
+      title: 'Rapid Polls - View Poll'
+    },
+  }
 ]
 
 const router = new VueRouter({
