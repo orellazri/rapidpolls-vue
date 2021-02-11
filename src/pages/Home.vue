@@ -88,14 +88,27 @@ export default {
 			while (true) { // eslint-disable-line no-constant-condition 
 				const doc = await db.collection('polls').doc(pollId).get();
 				if (!doc.exists) break;
+				pollId = generateId(10);
 			}
 
-			await db.collection('polls').doc(this.pollId).set({
+			await db.collection('polls').doc(pollId).set({
 				title: this.title,
-				choices: this.trimmedChoices,
 				total_votes: 0,
 				created_at: firebase.firestore.FieldValue.serverTimestamp(),
 			});
+			
+			let index = 0;
+			for (const choice of trimmedChoices) {
+				await db.collection('polls').doc(pollId).collection('choices').doc(index.toString()).set({
+					id: index,
+					title: choice,
+					votes: 0
+				});
+
+				index++;
+			}
+
+			this.$router.push(`/${pollId}/`);
 		},
 
 		focusChoice(index) {

@@ -18,12 +18,13 @@
 			<div class="row">
 				<div class="col">
 					<div v-if="!hasVoted">
+						<!-- Not voted-->
 						<form @submit.prevent="vote">
 							<div class="form-check">
-								<div class="row mb-3" v-for="(choice, index) in poll.choices" :key="index">
+								<div class="row mb-3" v-for="(choice, index) in choices" :key="index">
 									<input type="radio" class="form-check-input"
 										name="choice" :id="'choice'+index" :value="index" v-model="choicePicked">
-									<label class="form-check-label" :for="'choice'+index">{{ choice }}</label>
+									<label class="form-check-label" :for="'choice'+index">{{ choice.title }}</label>
 								</div>
 							</div>
 
@@ -31,7 +32,14 @@
 						</form>
 					</div>
 					<div v-else>
-						voted
+						<!-- Voted -->
+						<div v-for="(choice, index) in choices" :key="index">
+								<div class="progress mb-3" style="height: 30px;">
+									<div class="progress-bar" :style="'width: ' + votePrecent(index) + '%'">
+										{{ choice.title }}
+									</div>
+								</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -52,8 +60,9 @@ export default {
 			loading: true,
 			id: '',
 			poll: [],
+			choices: [],
+			choicePicked: -1,
 			hasVoted: false,
-			choicePicked: -1
 		}
 	},
 
@@ -67,6 +76,10 @@ export default {
 			this.poll = poll.data();
 		}
 
+		// Read choices
+		const choicesSnapshot = await db.collection('polls').doc(this.id).collection('choices').get();
+		this.choices = choicesSnapshot.docs.map(doc => doc.data());
+
 		// Check if the user has already voted (by IP)
 		this.ip = await getIP();
 		const vote = await db.collection('polls').doc(this.id).collection('votes').doc(this.ip).get();
@@ -76,6 +89,11 @@ export default {
 	},
 	
 	methods: {
+		votePrecent(index) {
+			// Calculate the percent a vote holds from the total votes
+			return (this.choices[index].votes / this.poll.total_votes) * 100;
+		},
+
 		async vote() {
 			if (this.choicePicked == -1) {
 				return;
@@ -88,7 +106,12 @@ export default {
 
 			// Increment total votes for poll
 			await db.collection('polls').doc(this.id).update({
-				total_votes: firebase.firestore.FieldValue.increment(1)
+				total_votes: firebase.firestore.FieldValue.increment(1),
+			});
+
+			// Increment votes for choice
+			await db.collection('polls').doc(this.id).collection('choices').doc(this.choicePicked.toString()).update({
+				votes: firebase.firestore.FieldValue.increment(1),
 			});
 
 			// Reload page
