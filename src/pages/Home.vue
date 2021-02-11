@@ -75,7 +75,7 @@ export default {
 
 			// Trim the choices so there will be no empty choices in between
 			const trimmedChoices = this.choices.filter((choice) => {
-				if (choice.trim() != '') return choice;
+				if (choice.trim() != '') return choice.trim();
 			});
 			
 			if (trimmedChoices.length < 2) {
@@ -93,6 +93,7 @@ export default {
 			await db.collection('polls').doc(this.pollId).set({
 				title: this.title,
 				choices: this.trimmedChoices,
+				total_votes: 0,
 				created_at: firebase.firestore.FieldValue.serverTimestamp(),
 			});
 		},

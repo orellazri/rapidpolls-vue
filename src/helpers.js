@@ -8,3 +8,9 @@ export function generateId(length) {
 
 	return result;
 }
+
+export async function getIP() {
+	const data = await fetch('https://api.ipify.org?format=json');
+	const { ip } = await data.json();
+	return ip;
+}
