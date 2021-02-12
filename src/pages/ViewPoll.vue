@@ -14,7 +14,7 @@
 
 		<!-- Finished loading -->
 		<div v-if="!loading && error == ''">
-			<b-row>
+			<b-row class="mb-3">
 				<b-col>
 					<h3>{{ this.poll.title }}</h3>
 				</b-col>
@@ -121,6 +121,7 @@ export default {
 			this.ip = await getIP();
 		} catch (e) {
 			this.error = "Could not fetch information that's required to protect the polls on our site. Please disable your ad blocker and refresh this page.";
+			this.loading = false;
 			return;
 		}
 
