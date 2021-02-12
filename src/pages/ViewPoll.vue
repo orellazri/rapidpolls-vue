@@ -51,12 +51,12 @@
 
 							{{ choice.title }} ({{ votePercent(index) }}%)
 
-							<b-progress height="2rem">
+							<b-progress height="2rem" class="mb-2">
 								<b-progress-bar :style="'background:' + choicesColors[index]" :value="votePercent(index)"></b-progress-bar>
 							</b-progress>
 						</div>
 
-						<h5>Total Votes: {{ poll.total_votes }}</h5>
+						<h5 class="mt-3">Total Votes: {{ poll.total_votes }}</h5>
 					</b-col>
 
 					<b-col>
