@@ -4,13 +4,7 @@
 		<LoadingSpinner :loading="loading" />
 
 		<!-- Error -->
-		<b-row v-if="error != ''">
-			<b-col>
-				<b-alert show variant="danger">
-					{{ error }}
-				</b-alert>
-			</b-col>
-		</b-row>
+		<Error :error="error" />
 
 		<!-- Finished loading -->
 		<div v-if="!loading && error == ''">
@@ -46,7 +40,7 @@
 					<b-col>
 						<div v-for="(choice, index) in choices" :key="index">
 							<span v-if="index == indexVoted">
-								<i class="bi bi-check"></i>
+								<b-icon icon="check-circle-fill" variant="success" style="font-size: 1.5rem"></b-icon>
 							</span>
 
 							{{ choice.title }} ({{ votePercent(index) }}%)
@@ -74,11 +68,13 @@ import db from '@/db';
 import { getIP } from '@/helpers';
 
 import LoadingSpinner from '@/components/LoadingSpinner';
+import Error from '@/components/Error';
 import PollChart from '@/components/PollChart';
 
 export default {
 	components: {
 		LoadingSpinner,
+		Error,
 		PollChart,
 	},
 

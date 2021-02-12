@@ -1,29 +1,33 @@
 <template>
 	<div id="app">
+		<Navbar />
 		
-		<b-navbar toggleable="lg" type="dark" variant="dark" class="mb-4">
-			<router-link to="/">
-				<b-navbar-brand>
-					Rapid Polls
-				</b-navbar-brand>
-			</router-link>
-
-			<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-			<b-collapse id="nav-collapse" is-nav>
-				<b-navbar-nav class="ml-auto">
-					<b-nav-form>
-						<b-button variant="primary">Log In</b-button>
-					</b-nav-form>
-				</b-navbar-nav>
-			</b-collapse>
-		</b-navbar>
-
 		<b-container>
 			<router-view/>
 		</b-container>
 	</div>
 </template>
+
+<script>
+import firebase from '@/firebase';
+import store from '@/store';
+
+import Navbar from '@/components/Navbar';
+
+export default {
+	components: {
+		Navbar
+	},
+
+	created() {
+		// Responsible on updating the store's user state
+		// accoring to the user state from firebase
+		firebase.auth().onAuthStateChanged(user => {
+			store.commit("changeUser", user);
+		});
+	},
+}
+</script>
 
 <style lang="scss">
 

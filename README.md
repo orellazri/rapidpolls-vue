@@ -1,14 +1,6 @@
 # Rapid Polls Vue Frontend
 This is the frontend for Rapid Polls.
 
-## TODO:
-* User authentication
-* Assign poll to user
-* Let user see statistics for polls he created (views, votes)
-* Implement a way to prevent double-voting
-* Let creator choose if voters will need to specify their names/emails
-
-
 ## Project setup
 ```
 yarn install
