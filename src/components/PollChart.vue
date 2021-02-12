@@ -1,16 +1,16 @@
 <script>
-import { Doughnut } from 'vue-chartjs';
+import { Pie } from 'vue-chartjs';
 
 export default {
-	extends: Doughnut,
+	extends: Pie,
 
 	props: ['data'],
 
 	mounted() {
 		this.renderChart(this.data, {
-			borderWidth: "10px",
-      hoverBackgroundColor: "red",
-      hoverBorderWidth: "10px" });
+			responsive: true,
+			maintainAspectRatio: false,
+		});
 	},
 }
 </script>

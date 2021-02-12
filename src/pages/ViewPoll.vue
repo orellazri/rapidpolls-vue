@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<!-- Loading Spinner -->
+		<LoadingSpinner :loading="loading" />
+
 		<div class="row" v-if="error != ''">
 			<div class="col">
 				<div class="alert alert-danger" role="alert">
@@ -8,6 +11,7 @@
 			</div>
 		</div>
 
+		<!-- Error -->
 		<div v-if="!loading && error == ''">
 			<div class="row">
 				<div class="col">
@@ -15,10 +19,10 @@
 				</div>
 			</div>
 
+			<!-- Not voted-->
 			<div v-if="!hasVoted">
 				<div class="row">
 					<div class="col">
-						<!-- Not voted-->
 						<form @submit.prevent="vote">
 							<div class="form-check">
 								<div class="row mb-3" v-for="(choice, index) in choices" :key="index">
@@ -36,10 +40,10 @@
 				</div>
 			</div>
 			
+			<!-- Voted -->
 			<div v-else>
 				<div class="row">
 					<div class="col">
-						<!-- Voted -->
 						<div v-for="(choice, index) in choices" :key="index">
 							<span v-if="index == indexVoted">
 								<i class="bi bi-check"></i>
@@ -48,15 +52,16 @@
 							{{ choice.title }} ({{ votePrecent(index) }}%)
 
 							<div class="progress mb-3" style="height: 30px;">
-								<div class="progress-bar" :style="'width: ' + votePrecent(index) + '%'"></div>
+								<div class="progress-bar"
+									:style="'width: ' + votePrecent(index) + '%; background:' + choicesColors[index]"></div>
 							</div>
 						</div>
-					</div>
-				</div>
 
-				<div class="row">
+						<h5>Total Votes: {{ poll.total_votes }}</h5>
+					</div>
+
 					<div class="col">
-						<PollChart :data="chartData" />
+						<PollChart :data="chartData" :height="300" />
 					</div>
 				</div>
 			</div>
@@ -69,10 +74,12 @@ import firebase from '@/firebase';
 import db from '@/db';
 import { getIP } from '@/helpers';
 
+import LoadingSpinner from '@/components/LoadingSpinner';
 import PollChart from '@/components/PollChart';
 
 export default {
 	components: {
+		LoadingSpinner,
 		PollChart,
 	},
 
@@ -88,6 +95,11 @@ export default {
 			choicePicked: -1, // The choice picked from the vote form
 			indexVoted: -1, 	// The index this IP has voted on
 			chartData: {},		// Chart data
+			choicesColors: [	// Colors for the chart and stats
+				'#01BAEF', '#0CBABA', '#F2CD5D',
+				'#D741A7', '#F0F3BD', '#ED7D3A',
+				'#C69C72', '#49416D', '#B3F2DD',
+			] 
 		};
 	},
 
@@ -109,7 +121,7 @@ export default {
 		try {
 			this.ip = await getIP();
 		} catch (e) {
-			this.error = 'Could not fetch information. Please disable your AdBlocker.';
+			this.error = "Could not fetch information that's required to protect the polls on our site. Please disable your AdBlocker.";
 			return;
 		}
 
@@ -132,10 +144,15 @@ export default {
 			chartDatasets[0].data.push(choice.votes);
 		});
 
+		chartDatasets[0].backgroundColor = this.choicesColors;
+
 		this.chartData = {
 			labels: chartLabels,
-			datasets: chartDatasets
+			datasets: chartDatasets,
 		};
+
+		// Change page title
+		document.querySelector('head title').textContent = `${this.poll.title} - Rapid Polls`;
 
 		this.loading = false;
 	},

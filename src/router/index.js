@@ -19,7 +19,7 @@ const routes = [
     name: 'ViewPoll',
     component: ViewPoll,
     meta: {
-      title: 'Rapid Polls - View Poll'
+      title: 'View Poll - Rapid Polls'
     },
   }
 ]
