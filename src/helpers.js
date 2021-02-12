@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export function generateId(length) {
 	var result           = '';
 	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -13,4 +15,8 @@ export async function getIP() {
 	const data = await fetch('https://api.ipify.org?format=json');
 	const { ip } = await data.json();
 	return ip;
+}
+
+export function convertTimestamp(time) {
+	return moment(time.toDate()).format('DD/MM/YYYY HH:MM');
 }

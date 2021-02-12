@@ -22,8 +22,8 @@
 
 <script>
 import { mapState } from 'vuex';
-import moment from 'moment';
 import db from '@/db';
+import { convertTimestamp } from '@/helpers';
 
 import Error from '@/components/Error';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -65,9 +65,7 @@ export default {
 	},
 
 	methods: {
-		convertTimestamp(time) {
-			return moment(time.toDate()).format('DD/MM/YYYY HH:MM');
-		},
+		convertTimestamp,
 	},
 };
 </script>

@@ -10,7 +10,8 @@
 		<div v-if="!loading && error == ''">
 			<b-row class="mb-3">
 				<b-col>
-					<h3>{{ this.poll.title }}</h3>
+					<h3>{{ poll.title }}</h3>
+					<b-icon icon="clock"></b-icon> {{ convertTimestamp(poll.created_at) }}
 				</b-col>
 			</b-row>
 
@@ -43,7 +44,10 @@
 								<b-icon icon="check-circle-fill" variant="success" style="font-size: 1.5rem"></b-icon>
 							</span>
 
-							{{ choice.title }} ({{ votePercent(index) }}%)
+							{{ choice.title }}
+							<span class="float-right">
+								{{ votePercent(index) }}% ({{ choice.votes }} votes)
+							</span>
 
 							<b-progress height="2rem" class="mb-2">
 								<b-progress-bar :style="'background:' + choicesColors[index]" :value="votePercent(index)"></b-progress-bar>
@@ -65,7 +69,7 @@
 <script>
 import firebase from '@/firebase';
 import db from '@/db';
-import { getIP } from '@/helpers';
+import { getIP, convertTimestamp } from '@/helpers';
 
 import LoadingSpinner from '@/components/LoadingSpinner';
 import Error from '@/components/Error';
@@ -154,6 +158,8 @@ export default {
 	},
 
 	methods: {
+		convertTimestamp,
+
 		votePercent(index) {
 			// Calculate the percent a vote holds from the total votes
 			return ((this.choices[index].votes / this.poll.total_votes) * 100).toFixed(2);
