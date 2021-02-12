@@ -120,7 +120,7 @@ export default {
 		try {
 			this.ip = await getIP();
 		} catch (e) {
-			this.error = "Could not fetch information that's required to protect the polls on our site. Please disable your AdBlocker.";
+			this.error = "Could not fetch information that's required to protect the polls on our site. Please disable your ad blocker and refresh this page.";
 			return;
 		}
 
