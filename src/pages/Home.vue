@@ -1,51 +1,54 @@
 <template>
 	<div>
-		<div class="row">
-			<div class="col">
+		<b-row>
+			<b-col>
 				<h2>Welcome to Rapid Polls! 🙋🏻</h2>
-			</div>
-		</div>
+			</b-col>
+		</b-row>
 
 		<hr>
 
-		<div class="row">
-			<div class="col">
+		<b-row>
+			<b-col>
 				<div v-if="error != ''">
-					<div class="alert alert-danger" role="alert">
+					<b-alert show variant="danger">
 						{{ error }}
-					</div>
+					</b-alert>
 				</div>
 
 				<h3>Create a poll</h3>
-				<form @submit.prevent="createPoll">
-					<div class="row mb-3">
-						<label for="title" class="col-sm-2 col-form-label">Title</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="title"
-								v-model="title" placeholder="What is your question?"
-								@focus="startedForm = true">
-						</div>
-					</div>
+				<b-form @submit.prevent="createPoll">
+					<b-row class="mb-3">
+						<b-col cols="12" sm="2">
+							<label for="title" class="col-form-label">Title</label>
+						</b-col>
+						<b-col cols="12" sm="10">
+							<b-form-input id="title"
+								v-model="title" placeholder="What is your question?" required></b-form-input>
+						</b-col>
+					</b-row>
 
-					<div v-if="startedForm">
-						<div class="row mb-3">
-							<label class="col-sm-2 col-form-label">Choices</label>
-							<div class="col-sm-10">
+					<div>
+						<b-row class="mb-3">
+							<b-col cols="12" sm="2">
+								<label for="title" class="col-form-label">Choices</label>
+							</b-col>
+							<b-col cols="12" sm="10">
 								<div v-for="(choice, index) in choices" :key="index">
-									<input type="text" class="form-control mb-3"
+									<b-form-input class="mb-3"
 										v-model="choices[index]" placeholder="Type a choice..."
-										@focus="focusChoice(index)">
+										@focus="focusChoice(index)"></b-form-input>
 								</div>
-							</div>
-						</div>
+							</b-col>
+						</b-row>
 
-						<div class="row mb-3">
-							<button type="submit" class="btn btn-primary">Create Poll</button>
-						</div>
+						<b-row class="mb-3">
+							<b-button type="submit" variant="primary">Create Poll</b-button>
+						</b-row>
 					</div>
-				</form>
-			</div>
-		</div>
+				</b-form>
+			</b-col>
+		</b-row>
 	</div>
 </template>
 
@@ -58,7 +61,6 @@ export default {
 	data() {
 		return {
 			title: '',
-			startedForm: false,
 			choices: ['', '', ''],
 			error: '',
 		}

@@ -3,67 +3,66 @@
 		<!-- Loading Spinner -->
 		<LoadingSpinner :loading="loading" />
 
-		<div class="row" v-if="error != ''">
-			<div class="col">
-				<div class="alert alert-danger" role="alert">
-					{{ error }}
-				</div>
-			</div>
-		</div>
-
 		<!-- Error -->
+		<b-row v-if="error != ''">
+			<b-col>
+				<b-alert show variant="danger">
+					{{ error }}
+				</b-alert>
+			</b-col>
+		</b-row>
+
+		<!-- Finished loading -->
 		<div v-if="!loading && error == ''">
-			<div class="row">
-				<div class="col">
+			<b-row>
+				<b-col>
 					<h3>{{ this.poll.title }}</h3>
-				</div>
-			</div>
+				</b-col>
+			</b-row>
 
 			<!-- Not voted-->
 			<div v-if="!hasVoted">
-				<div class="row">
-					<div class="col">
-						<form @submit.prevent="vote">
-							<div class="form-check">
-								<div class="row mb-3" v-for="(choice, index) in choices" :key="index">
-									<input type="radio" class="form-check-input" name="choice"
+				<b-row>
+					<b-col>
+						<b-form @submit.prevent="vote">
+							<b-form-group>
+								<div class="mb-3" v-for="(choice, index) in choices" :key="index">
+									<b-form-radio name="choice"
 										:id="'choice' + index" :value="index" v-model="choicePicked">
-									<label class="form-check-label" :for="'choice' + index">
-										{{ choice.title }}
-									</label>
+										{{ choice.title }}	
+									</b-form-radio>
 								</div>
-							</div>
+							</b-form-group>
 
-							<button type="submit" class="btn btn-primary">Vote</button>
-						</form>
-					</div>
-				</div>
+							<b-button type="submit" variant="primary">Vote</b-button>
+						</b-form>
+					</b-col>
+				</b-row>
 			</div>
 			
 			<!-- Voted -->
 			<div v-else>
-				<div class="row">
-					<div class="col">
+				<b-row>
+					<b-col>
 						<div v-for="(choice, index) in choices" :key="index">
 							<span v-if="index == indexVoted">
 								<i class="bi bi-check"></i>
 							</span>
 
-							{{ choice.title }} ({{ votePrecent(index) }}%)
+							{{ choice.title }} ({{ votePercent(index) }}%)
 
-							<div class="progress mb-3" style="height: 30px;">
-								<div class="progress-bar"
-									:style="'width: ' + votePrecent(index) + '%; background:' + choicesColors[index]"></div>
-							</div>
+							<b-progress height="2rem">
+								<b-progress-bar :style="'background:' + choicesColors[index]" :value="votePercent(index)"></b-progress-bar>
+							</b-progress>
 						</div>
 
 						<h5>Total Votes: {{ poll.total_votes }}</h5>
-					</div>
+					</b-col>
 
-					<div class="col">
+					<b-col>
 						<PollChart :data="chartData" :height="300" />
-					</div>
-				</div>
+					</b-col>
+				</b-row>
 			</div>
 		</div>
 	</div>
@@ -158,7 +157,7 @@ export default {
 	},
 
 	methods: {
-		votePrecent(index) {
+		votePercent(index) {
 			// Calculate the percent a vote holds from the total votes
 			return ((this.choices[index].votes / this.poll.total_votes) * 100).toFixed(2);
 		},
