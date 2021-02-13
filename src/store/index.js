@@ -12,6 +12,8 @@ export default new Vuex.Store({
   mutations: {
     setError(state, error) {
       state.error = error;
+      if (error)
+        state.loading = false;
     },
 
     setLoading(state, loading) {

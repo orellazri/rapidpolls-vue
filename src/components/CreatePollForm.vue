@@ -13,24 +13,32 @@
 					</b-col>
 				</b-row>
 
-				<div>
-					<b-row class="mb-3">
-						<b-col cols="12" sm="2">
-							<label for="title" class="col-form-label">Choices</label>
-						</b-col>
-						<b-col cols="12" sm="10">
-							<div v-for="(choice, index) in choices" :key="index">
-								<b-form-input class="mb-3"
-									v-model="choices[index]" placeholder="Type a choice..."
-									@focus="focusChoice(index)"></b-form-input>
-							</div>
-						</b-col>
-					</b-row>
+				<b-row class="mb-3">
+					<b-col cols="12" sm="2">
+						<label for="title" class="col-form-label">Choices</label>
+					</b-col>
+					<b-col cols="12" sm="10">
+						<div v-for="(choice, index) in choices" :key="index">
+							<b-form-input class="mb-3"
+								v-model="choices[index]" placeholder="Type a choice..."
+								@focus="focusChoice(index)"></b-form-input>
+						</div>
+					</b-col>
+				</b-row>
 
-					<b-row class="mb-3">
+				<b-row class="mb-3">
+					<b-col>
+						<b-form-checkbox v-model="enforceLogin">
+							Voters must be logged in
+						</b-form-checkbox>
+					</b-col>
+				</b-row>
+
+				<b-row class="mb-3">
+					<b-col>
 						<b-button type="submit" variant="primary">Create Poll</b-button>
-					</b-row>
-				</div>
+					</b-col>
+				</b-row>
 			</b-form>
 		</b-col>
 	</b-row>
@@ -48,6 +56,7 @@ export default {
 		return {
 			title: '',
 			choices: ['', '', ''],
+			enforceLogin: false,
 		}
 	},
 
@@ -82,6 +91,7 @@ export default {
 			await db.collection('polls').doc(pollId).set({
 				title: this.title,
 				total_votes: 0,
+				enforce_login: this.enforceLogin,
 				creator: (this.user != null) ? this.user.uid : null,
 				created_at: firebase.firestore.FieldValue.serverTimestamp(),
 			});

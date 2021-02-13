@@ -24,7 +24,7 @@ export default {
 	},
 
 	mounted() {
-		store.commit("setLoading", false);		
+		store.commit('setLoading', false);		
 	}
 };
 </script>

@@ -108,12 +108,11 @@ export default {
 		const choicesSnapshot = await db.collection('polls').doc(this.id).collection('choices').get();
 		this.choices = choicesSnapshot.docs.map((doc) => doc.data());
 
-		// Check if the user has already voted (by IP)
+		// Get the user's IP
 		try {
 			this.ip = await getIP();
 		} catch (e) {
 			store.commit('setError', "Could not fetch information that's required to protect the polls on our site. Please disable your ad blocker and refresh this page.");
-			store.commit('setLoading', false);
 			return;
 		}
 
@@ -128,6 +127,12 @@ export default {
 
 		if (this.hasVoted) {
 			this.indexVoted = vote.docs[0].data().choice;
+		} else {
+			// Check if enforce login is true and the user is not logged in
+			if (this.poll.enforce_login && this.user == null) {
+				store.commit('setError', 'You must be logged in to vote on this poll.');
+				return;
+			}
 		}
 
 		// Update chart data

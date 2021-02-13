@@ -45,7 +45,6 @@ export default {
 			}
 		} catch (e) {
 			store.commit('setError', 'An error occured while trying to fetch your polls.');
-			store.commit('setLoading', false);
 			return;
 		}
 
