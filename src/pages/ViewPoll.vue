@@ -92,7 +92,7 @@ export default {
 		};
 	},
 
-	computed: mapState(['error', 'loading']),
+	computed: mapState(['error', 'loading', 'user']),
 
 	async created() {
 		this.id = this.$route.params.pollId;
@@ -117,10 +117,17 @@ export default {
 			return;
 		}
 
-		const vote = await db.collection('polls').doc(this.id).collection('votes').doc(this.ip).get();
-		this.hasVoted = vote.exists;
+		// Check if the user has voted on this poll already
+		let vote = await db.collection('polls').doc(this.id).collection('votes').where('ip', '==', this.ip).get();
+		this.hasVoted = vote.docs.length > 0;
+		// Try looking for user id instead of ip, if ip was not found
+		if (!this.hasVoted && this.user != null) {
+			vote = await db.collection('polls').doc(this.id).collection('votes').where('user_id', '==', this.user.uid).get();
+			this.hasVoted =  vote.docs.length > 0;
+		}
+
 		if (this.hasVoted) {
-			this.indexVoted = vote.data().choice;
+			this.indexVoted = vote.docs[0].data().choice;
 		}
 
 		// Update chart data
@@ -162,8 +169,10 @@ export default {
 				return;
 			}
 
-			// Add a vote document with the user's ip
-			await db.collection('polls').doc(this.id).collection('votes').doc(this.ip).set({
+			// Add a vote document with the user's details
+			await db.collection('polls').doc(this.id).collection('votes').doc().set({
+				ip: this.ip,
+				user_id: (this.user != null) ? this.user.uid : null,
 				choice: this.choicePicked,
 			});
 
