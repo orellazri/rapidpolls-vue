@@ -1,13 +1,7 @@
 <template>
 	<div>
-		<!-- Loading Spinner -->
-		<LoadingSpinner :loading="loading" />
-
-		<!-- Error -->
-		<Error :error="error" />
-
 		<!-- Finished loading -->
-		<div v-if="!loading && error == ''">
+		<div v-if="!loading && !error">
 			<b-row class="mb-3">
 				<b-col>
 					<h3>{{ poll.title }}</h3>
@@ -67,27 +61,23 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import store from '@/store';
 import firebase from '@/firebase';
 import db from '@/db';
 import { getIP, convertTimestamp } from '@/helpers';
 
-import LoadingSpinner from '@/components/LoadingSpinner';
-import Error from '@/components/Error';
 import PollChart from '@/components/PollChart';
 
 export default {
 	components: {
-		LoadingSpinner,
-		Error,
 		PollChart,
 	},
 
 	data() {
 		return {
-			error: '', 				// Error
 			ip: '', 					// User IP
 			id: '', 					// Poll id (from params)
-			loading: true, 		// Loading poll information
 			hasVoted: false, 	// If this IP already voted or not (to show vote/stats)
 			poll: [], 				// Poll object
 			choices: [], 			// Poll choices object
@@ -102,12 +92,14 @@ export default {
 		};
 	},
 
+	computed: mapState(['error', 'loading']),
+
 	async created() {
 		this.id = this.$route.params.pollId;
 
 		const poll = await db.collection('polls').doc(this.id).get();
 		if (!poll.exists) {
-			this.error = 'This poll does not exist';
+			store.commit('setError', 'This poll does not exist');
 		} else {
 			this.poll = poll.data();
 		}
@@ -120,8 +112,8 @@ export default {
 		try {
 			this.ip = await getIP();
 		} catch (e) {
-			this.error = "Could not fetch information that's required to protect the polls on our site. Please disable your ad blocker and refresh this page.";
-			this.loading = false;
+			store.commit('setError', "Could not fetch information that's required to protect the polls on our site. Please disable your ad blocker and refresh this page.");
+			store.commit('setLoading', false);
 			return;
 		}
 
@@ -154,7 +146,7 @@ export default {
 		// Change page title
 		document.querySelector('head title').textContent = `${this.poll.title} - Rapid Polls`;
 
-		this.loading = false;
+		store.commit('setLoading', false);
 	},
 
 	methods: {

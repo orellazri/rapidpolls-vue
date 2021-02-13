@@ -1,8 +1,5 @@
 <template>
 	<div>
-		<Error :error="error" />
-		<LoadingSpinner :loading="loading" />
-
 		<b-row v-if="!loading">
 			<b-col>
 				<b-card v-for="(poll, index) in polls" :key="index" class="mb-4">
@@ -22,27 +19,18 @@
 
 <script>
 import { mapState } from 'vuex';
+import store from '@/store';
 import db from '@/db';
 import { convertTimestamp } from '@/helpers';
 
-import Error from '@/components/Error';
-import LoadingSpinner from '@/components/LoadingSpinner';
-
 export default {
-	components: {
-		Error,
-		LoadingSpinner,
-	},
-
 	data() {
 		return {
-			error: '',	
-			loading: true,
 			polls: [],
 		}
 	},
 
-	computed: mapState(['user']),
+	computed: mapState(['error', 'loading', 'user']),
 
 	async created() {
 		if (this.user == null) {
@@ -56,12 +44,12 @@ export default {
 				this.polls.push({ id: doc.id, ...doc.data() });
 			}
 		} catch (e) {
-			this.error = 'An error occured while trying to fetch your polls.';
-			this.loading = false;
+			store.commit('setError', 'An error occured while trying to fetch your polls.');
+			store.commit('setLoading', false);
 			return;
 		}
 
-		this.loading = false;
+		store.commit('setLoading', false);
 	},
 
 	methods: {

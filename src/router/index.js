@@ -4,6 +4,8 @@ import Home from '../pages/Home.vue'
 import ViewPoll from '../pages/ViewPoll.vue'
 import MyPolls from '../pages/MyPolls.vue'
 
+import store from '@/store';
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -40,6 +42,9 @@ const router = new VueRouter({
 
 // This callback runs before every route change, including on page load.
 router.beforeEach((to, from, next) => {
+	store.commit('setError', null);
+	store.commit('setLoading', true);
+
 	// This goes through the matched routes from last to first, finding the closest route with a title.
 	// e.g., if we have `/some/deep/nested/route` and `/some`, `/deep`, and `/nested` have titles,
 	// `/nested`'s will be chosen.

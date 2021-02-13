@@ -1,5 +1,5 @@
 <template>
-	<b-row v-if="error != ''">
+	<b-row v-if="error">
 		<b-col>
 			<b-alert show variant="danger">
 				{{ error }}
@@ -9,7 +9,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
-	props: ['error']
+	computed: mapState(['error']),
 }
 </script>

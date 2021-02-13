@@ -14,12 +14,18 @@
 </template>
 
 <script>
+import store from '@/store';
+
 import CreatePollForm from '@/components/CreatePollForm';
 
 export default {
 	components: {
 		CreatePollForm,
 	},
+
+	mounted() {
+		store.commit("setLoading", false);		
+	}
 };
 </script>
 

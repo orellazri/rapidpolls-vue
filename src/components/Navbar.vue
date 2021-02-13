@@ -35,18 +35,18 @@
 <script>
 import firebase from '@/firebase';
 import { mapState } from 'vuex';
-import store from '@/store';
 
 export default {
 	computed: mapState(['user']),
 
 	methods: {
-		loginGoogle() {
-			store.dispatch("loginGoogle");
+		async loginGoogle() {
+			const provider = new firebase.auth.GoogleAuthProvider();
+			await firebase.auth().signInWithPopup(provider);
 		},
 
 		logout() {
-			store.dispatch("logout");
+			firebase.auth().signOut();
 			this.$router.push('/');
 		}
 	},

@@ -1,8 +1,6 @@
 <template>
 	<b-row>
 		<b-col>
-			<Error :error="error" />
-
 			<h3>Create a poll</h3>
 			<b-form @submit.prevent="createPoll">
 				<b-row class="mb-3">
@@ -39,34 +37,26 @@
 </template>
 
 <script>
+import store from '@/store';
 import firebase from '@/firebase';
 import db from '@/db';
 import { mapState } from 'vuex';
 import { generateId } from '@/helpers';
 
-import Error from '@/components/Error';
-
 export default {
-	components: {
-		Error,
-	},
-
 	data() {
 		return {
 			title: '',
 			choices: ['', '', ''],
-			error: '',
 		}
 	},
 
-	computed: mapState(['user']),
+	computed: mapState(['error', 'user']),
 	
 	methods: {
 		async createPoll() {
-			this.error = '';
-			
 			if (this.title.trim() == '') {
-				this.error = 'Title cannot be blank.';
+				store.commit('setError', 'Title cannot be blank.');
 				return;
 			}
 
@@ -76,7 +66,7 @@ export default {
 			});
 			
 			if (trimmedChoices.length < 2) {
-				this.error = 'You must specify at least 2 choices.';
+				store.commit('setError', 'You must specify at least 2 choices.');
 				return;
 			}
 
