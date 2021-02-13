@@ -43,6 +43,8 @@ export default {
 		async loginGoogle() {
 			const provider = new firebase.auth.GoogleAuthProvider();
 			await firebase.auth().signInWithPopup(provider);
+			// Reload page
+			this.$router.go('');
 		},
 
 		logout() {
