@@ -1,8 +1,6 @@
 # Rapid Polls Vue Frontend
 This is the frontend for Rapid Polls.
 
-Demo: https://rapidpolls-c09f3.web.app/#/
-
 ![Demo Image](https://i.imgur.com/BOBYHaJ.png)
 
 ## Project setup
